@@ -45,11 +45,9 @@ export class GuildCounters extends BaseGuildRepository {
   }
 
   async findOrCreateCounter(name: string, perChannel: boolean, perUser: boolean): Promise<Counter> {
-    const existing = await this.counters.findOne({
-      where: {
-        guild_id: this.guildId,
-        name,
-      },
+    const existing = await this.counters.findOneBy({
+      guild_id: this.guildId,
+      name,
     });
 
     if (existing) {
@@ -72,10 +70,8 @@ export class GuildCounters extends BaseGuildRepository {
       last_decay_at: moment.utc().format(DBDateFormat),
     });
 
-    return (await this.counters.findOne({
-      where: {
-        id: insertResult.identifiers[0].id,
-      },
+    return (await this.counters.findOneBy({
+      id: insertResult.identifiers[0].id,
     }))!;
   }
 
@@ -149,10 +145,8 @@ export class GuildCounters extends BaseGuildRepository {
 
   decay(id: number, decayPeriodMs: number, decayAmount: number) {
     return decayQueue.add(async () => {
-      const counter = (await this.counters.findOne({
-        where: {
-          id,
-        },
+      const counter = (await this.counters.findOneBy({
+        id,
       }))!;
 
       const diffFromLastDecayMs = moment.utc().diff(moment.utc(counter.last_decay_at!), "ms");
@@ -257,11 +251,9 @@ export class GuildCounters extends BaseGuildRepository {
     }
 
     return dataSource.transaction(async (entityManager) => {
-      const existing = await entityManager.findOne(CounterTrigger, {
-        where: {
-          counter_id: counterId,
-          name: triggerName,
-        },
+      const existing = await entityManager.findOneBy(CounterTrigger, {
+        counter_id: counterId,
+        name: triggerName,
       });
 
       if (existing) {
@@ -285,7 +277,7 @@ export class GuildCounters extends BaseGuildRepository {
         reverse_comparison_value: reverseComparisonValue,
       });
 
-      return (await entityManager.findOne(CounterTrigger, insertResult.identifiers[0].id))!;
+      return (await entityManager.findOneBy(CounterTrigger, insertResult.identifiers[0].id))!;
     });
   }
 
@@ -311,12 +303,10 @@ export class GuildCounters extends BaseGuildRepository {
     userId = userId || "0";
 
     return dataSource.transaction(async (entityManager) => {
-      const previouslyTriggered = await entityManager.findOne(CounterTriggerState, {
-        where: {
-          trigger_id: counterTrigger.id,
-          user_id: userId!,
-          channel_id: channelId!,
-        },
+      const previouslyTriggered = await entityManager.findOneBy(CounterTriggerState, {
+        trigger_id: counterTrigger.id,
+        user_id: userId!,
+        channel_id: channelId!,
       });
 
       if (previouslyTriggered) {
@@ -494,12 +484,10 @@ export class GuildCounters extends BaseGuildRepository {
     channelId: string | null,
     userId: string | null,
   ): Promise<number | undefined> {
-    const value = await this.counterValues.findOne({
-      where: {
-        counter_id: counterId,
-        channel_id: channelId || "0",
-        user_id: userId || "0",
-      },
+    const value = await this.counterValues.findOneBy({
+      counter_id: counterId,
+      channel_id: channelId || "0",
+      user_id: userId || "0",
     });
 
     return value?.value;
