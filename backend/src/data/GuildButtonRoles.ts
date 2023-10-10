@@ -12,19 +12,15 @@ export class GuildButtonRoles extends BaseGuildRepository {
 
   async getForButtonId(buttonId: string) {
     return this.buttonRoles.findOne({
-      where: {
-        guild_id: this.guildId,
-        button_id: buttonId,
-      },
+      guild_id: this.guildId,
+      button_id: buttonId,
     });
   }
 
   async getAllForMessageId(messageId: string) {
     return this.buttonRoles.find({
-      where: {
-        guild_id: this.guildId,
-        message_id: messageId,
-      },
+      guild_id: this.guildId,
+      message_id: messageId,
     });
   }
 
@@ -44,10 +40,8 @@ export class GuildButtonRoles extends BaseGuildRepository {
 
   async getForButtonGroup(buttonGroup: string) {
     return this.buttonRoles.find({
-      where: {
-        guild_id: this.guildId,
-        button_group: buttonGroup,
-      },
+      guild_id: this.guildId,
+      button_group: buttonGroup,
     });
   }
 

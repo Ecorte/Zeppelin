@@ -1,6 +1,5 @@
-import { Repository } from "typeorm";
+import { getRepository, Repository } from "typeorm";
 import { BaseGuildRepository } from "./BaseGuildRepository";
-import { dataSource } from "./dataSource";
 import { StarboardReaction } from "./entities/StarboardReaction";
 
 export class GuildStarboardReactions extends BaseGuildRepository {
@@ -8,7 +7,7 @@ export class GuildStarboardReactions extends BaseGuildRepository {
 
   constructor(guildId) {
     super(guildId);
-    this.allStarboardReactions = dataSource.getRepository(StarboardReaction);
+    this.allStarboardReactions = getRepository(StarboardReaction);
   }
 
   async getAllReactionsForMessageId(messageId: string) {

@@ -208,8 +208,8 @@ export async function muteUser(
 
   // Create/update a case
   const casesPlugin = pluginData.getPlugin(CasesPlugin);
-  let theCase: Case | null =
-    existingMute && existingMute.case_id ? await pluginData.state.cases.find(existingMute.case_id) : null;
+  let theCase: Case | undefined =
+    existingMute && existingMute.case_id ? await pluginData.state.cases.find(existingMute.case_id) : undefined;
 
   if (theCase) {
     // Update old case

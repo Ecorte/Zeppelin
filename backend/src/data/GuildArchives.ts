@@ -1,13 +1,12 @@
 import { Guild, Snowflake } from "discord.js";
 import moment from "moment-timezone";
 import { isDefaultSticker } from "src/utils/isDefaultSticker";
-import { Repository } from "typeorm";
+import { Repository, getRepository } from "typeorm";
 import { TemplateSafeValueContainer, renderTemplate } from "../templateFormatter";
 import { renderUsername, trimLines } from "../utils";
 import { decrypt, encrypt } from "../utils/crypt";
 import { channelToTemplateSafeChannel, guildToTemplateSafeGuild } from "../utils/templateSafeObjects";
 import { BaseGuildRepository } from "./BaseGuildRepository";
-import { dataSource } from "./dataSource";
 import { ArchiveEntry } from "./entities/ArchiveEntry";
 import { SavedMessage } from "./entities/SavedMessage";
 
@@ -24,7 +23,7 @@ export class GuildArchives extends BaseGuildRepository<ArchiveEntry> {
 
   constructor(guildId) {
     super(guildId);
-    this.archives = dataSource.getRepository(ArchiveEntry);
+    this.archives = getRepository(ArchiveEntry);
   }
 
   protected async _processEntityFromDB(entity: ArchiveEntry | undefined) {
@@ -43,7 +42,7 @@ export class GuildArchives extends BaseGuildRepository<ArchiveEntry> {
     return entity;
   }
 
-  async find(id: string): Promise<ArchiveEntry | null> {
+  async find(id: string): Promise<ArchiveEntry | undefined> {
     const result = await this.archives.findOne({
       where: { id },
       relations: this.getRelations(),

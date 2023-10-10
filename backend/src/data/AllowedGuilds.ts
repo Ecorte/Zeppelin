@@ -1,9 +1,8 @@
 import moment from "moment-timezone";
-import { Repository } from "typeorm";
+import { getRepository, Repository } from "typeorm";
 import { DBDateFormat } from "../utils";
 import { ApiPermissionTypes } from "./ApiPermissionAssignments";
 import { BaseRepository } from "./BaseRepository";
-import { dataSource } from "./dataSource";
 import { AllowedGuild } from "./entities/AllowedGuild";
 
 export class AllowedGuilds extends BaseRepository {
@@ -11,10 +10,10 @@ export class AllowedGuilds extends BaseRepository {
 
   constructor() {
     super();
-    this.allowedGuilds = dataSource.getRepository(AllowedGuild);
+    this.allowedGuilds = getRepository(AllowedGuild);
   }
 
-  async isAllowed(guildId: string) {
+  async isAllowed(guildId) {
     const count = await this.allowedGuilds.count({
       where: {
         id: guildId,
@@ -23,15 +22,11 @@ export class AllowedGuilds extends BaseRepository {
     return count !== 0;
   }
 
-  find(guildId: string) {
-    return this.allowedGuilds.findOne({
-      where: {
-        id: guildId,
-      },
-    });
+  find(guildId) {
+    return this.allowedGuilds.findOne(guildId);
   }
 
-  getForApiUser(userId: string) {
+  getForApiUser(userId) {
     return this.allowedGuilds
       .createQueryBuilder("allowed_guilds")
       .innerJoin(

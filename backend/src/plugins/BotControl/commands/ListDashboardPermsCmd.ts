@@ -20,7 +20,7 @@ export const ListDashboardPermsCmd = botControlCmd({
       return;
     }
 
-    let guild: AllowedGuild | null = null;
+    let guild: AllowedGuild | undefined;
     if (args.guildId) {
       guild = await pluginData.state.allowedGuilds.find(args.guildId);
       if (!guild) {

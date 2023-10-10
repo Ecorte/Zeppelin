@@ -1,6 +1,5 @@
-import { Repository } from "typeorm";
+import { getRepository, Repository } from "typeorm";
 import { BaseGuildRepository } from "./BaseGuildRepository";
-import { dataSource } from "./dataSource";
 import { Tag } from "./entities/Tag";
 import { TagResponse } from "./entities/TagResponse";
 
@@ -10,8 +9,8 @@ export class GuildTags extends BaseGuildRepository {
 
   constructor(guildId) {
     super(guildId);
-    this.tags = dataSource.getRepository(Tag);
-    this.tagResponses = dataSource.getRepository(TagResponse);
+    this.tags = getRepository(Tag);
+    this.tagResponses = getRepository(TagResponse);
   }
 
   async all(): Promise<Tag[]> {
@@ -22,7 +21,7 @@ export class GuildTags extends BaseGuildRepository {
     });
   }
 
-  async find(tag): Promise<Tag | null> {
+  async find(tag): Promise<Tag | undefined> {
     return this.tags.findOne({
       where: {
         guild_id: this.guildId,
@@ -62,7 +61,7 @@ export class GuildTags extends BaseGuildRepository {
     });
   }
 
-  async findResponseByCommandMessageId(messageId: string): Promise<TagResponse | null> {
+  async findResponseByCommandMessageId(messageId: string): Promise<TagResponse | undefined> {
     return this.tagResponses.findOne({
       where: {
         guild_id: this.guildId,
@@ -71,7 +70,7 @@ export class GuildTags extends BaseGuildRepository {
     });
   }
 
-  async findResponseByResponseMessageId(messageId: string): Promise<TagResponse | null> {
+  async findResponseByResponseMessageId(messageId: string): Promise<TagResponse | undefined> {
     return this.tagResponses.findOne({
       where: {
         guild_id: this.guildId,

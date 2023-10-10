@@ -1,8 +1,7 @@
 import moment from "moment-timezone";
-import { Repository } from "typeorm";
+import { getRepository, Repository } from "typeorm";
 import { DAYS } from "../utils";
 import { BaseRepository } from "./BaseRepository";
-import { dataSource } from "./dataSource";
 import { MemberCacheItem } from "./entities/MemberCacheItem";
 
 const STALE_PERIOD = 90 * DAYS;
@@ -12,7 +11,7 @@ export class MemberCache extends BaseRepository {
 
   constructor() {
     super();
-    this.#memberCache = dataSource.getRepository(MemberCacheItem);
+    this.#memberCache = getRepository(MemberCacheItem);
   }
 
   async deleteStaleData(): Promise<void> {

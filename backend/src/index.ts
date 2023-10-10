@@ -25,7 +25,6 @@ import { Configs } from "./data/Configs";
 import { GuildLogs } from "./data/GuildLogs";
 import { LogType } from "./data/LogType";
 import { hasPhishermanMasterAPIKey } from "./data/Phisherman";
-import { dataSource } from "./data/dataSource";
 import { connect } from "./data/db";
 import { runExpiredArchiveDeletionLoop } from "./data/loops/expiredArchiveDeletionLoop";
 import { runExpiredMemberCacheDeletionLoop } from "./data/loops/expiredMemberCacheDeletionLoop";
@@ -189,14 +188,17 @@ setInterval(() => {
   avgCount++;
   lastCheck = now;
 }, 500);
-setInterval(() => {
-  const avgBlocking = avgTotal / (avgCount || 1);
-  // FIXME: Debug
-  // tslint:disable-next-line:no-console
-  console.log(`Average blocking in the last 5min: ${avgBlocking / avgTotal}ms`);
-  avgTotal = 0;
-  avgCount = 0;
-}, 5 * 60 * 1000);
+setInterval(
+  () => {
+    const avgBlocking = avgTotal / (avgCount || 1);
+    // FIXME: Debug
+    // tslint:disable-next-line:no-console
+    console.log(`Average blocking in the last 5min: ${avgBlocking / avgTotal}ms`);
+    avgTotal = 0;
+    avgCount = 0;
+  },
+  5 * 60 * 1000,
+);
 
 if (env.DEBUG) {
   logger.info("NOTE: Bot started in DEBUG mode");
@@ -446,7 +448,7 @@ connect().then(async (connection) => {
       // Force exit after 10sec
       setTimeout(() => process.exit(code), 10 * SECONDS);
       await bot.stop();
-      await dataSource.destroy();
+      await connection.close();
       logger.info("Done! Exiting now.");
       process.exit(code);
     };

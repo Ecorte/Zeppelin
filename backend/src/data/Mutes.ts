@@ -1,10 +1,9 @@
 import moment from "moment-timezone";
-import { Repository } from "typeorm";
+import { getRepository, Repository } from "typeorm";
 import { DAYS, DBDateFormat } from "../utils";
 import { BaseRepository } from "./BaseRepository";
-import { MuteTypes } from "./MuteTypes";
-import { dataSource } from "./dataSource";
 import { Mute } from "./entities/Mute";
+import { MuteTypes } from "./MuteTypes";
 
 const OLD_EXPIRED_MUTE_THRESHOLD = 7 * DAYS;
 
@@ -17,10 +16,10 @@ export class Mutes extends BaseRepository {
 
   constructor() {
     super();
-    this.mutes = dataSource.getRepository(Mute);
+    this.mutes = getRepository(Mute);
   }
 
-  findMute(guildId: string, userId: string): Promise<Mute | null> {
+  findMute(guildId: string, userId: string): Promise<Mute | undefined> {
     return this.mutes.findOne({
       where: {
         guild_id: guildId,

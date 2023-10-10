@@ -1,6 +1,5 @@
-import { Repository } from "typeorm";
+import { getRepository, Repository } from "typeorm";
 import { BaseRepository } from "./BaseRepository";
-import { dataSource } from "./dataSource";
 import { ArchiveEntry } from "./entities/ArchiveEntry";
 
 export class Archives extends BaseRepository {
@@ -8,7 +7,7 @@ export class Archives extends BaseRepository {
 
   constructor() {
     super();
-    this.archives = dataSource.getRepository(ArchiveEntry);
+    this.archives = getRepository(ArchiveEntry);
   }
 
   public deleteExpiredArchives() {

@@ -1,9 +1,8 @@
-import { In, Repository } from "typeorm";
+import { getRepository, In, Repository } from "typeorm";
 import { isAPI } from "../globals";
 import { MINUTES, SECONDS } from "../utils";
 import { BaseRepository } from "./BaseRepository";
 import { cleanupUsernames } from "./cleanup/usernames";
-import { dataSource } from "./dataSource";
 import { UsernameHistoryEntry } from "./entities/UsernameHistoryEntry";
 
 const CLEANUP_INTERVAL = 5 * MINUTES;
@@ -26,7 +25,7 @@ export class UsernameHistory extends BaseRepository {
 
   constructor() {
     super();
-    this.usernameHistory = dataSource.getRepository(UsernameHistoryEntry);
+    this.usernameHistory = getRepository(UsernameHistoryEntry);
   }
 
   async getByUserId(userId): Promise<UsernameHistoryEntry[]> {
@@ -41,7 +40,7 @@ export class UsernameHistory extends BaseRepository {
     });
   }
 
-  getLastEntry(userId): Promise<UsernameHistoryEntry | null> {
+  getLastEntry(userId): Promise<UsernameHistoryEntry | undefined> {
     return this.usernameHistory.findOne({
       where: {
         user_id: userId,

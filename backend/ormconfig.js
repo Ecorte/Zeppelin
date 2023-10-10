@@ -1,15 +1,16 @@
-import moment from "moment-timezone";
-import path from "path";
-import { DataSource } from "typeorm";
-import { env } from "../env";
-import { backendDir } from "../paths";
+const fs = require("fs");
+const path = require("path");
+const { backendDir } = require("./dist/backend/src/paths");
+const { env } = require("./dist/backend/src/env");
 
+const moment = require("moment-timezone");
 moment.tz.setDefault("UTC");
 
 const entities = path.relative(process.cwd(), path.resolve(backendDir, "dist/backend/src/data/entities/*.js"));
 const migrations = path.relative(process.cwd(), path.resolve(backendDir, "dist/backend/src/migrations/*.js"));
+const migrationsDir = path.relative(process.cwd(), path.resolve(backendDir, "src/migrations"));
 
-export const dataSource = new DataSource({
+module.exports = {
   type: "mysql",
   host: env.DB_HOST,
   port: env.DB_PORT,
@@ -42,4 +43,7 @@ export const dataSource = new DataSource({
 
   // Migrations
   migrations: [migrations],
-});
+  cli: {
+    migrationsDir,
+  },
+};

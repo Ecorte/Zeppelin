@@ -1,10 +1,9 @@
 import moment from "moment-timezone";
-import { Brackets, Repository } from "typeorm";
+import { Brackets, getRepository, Repository } from "typeorm";
 import { DBDateFormat } from "../utils";
 import { BaseGuildRepository } from "./BaseGuildRepository";
-import { MuteTypes } from "./MuteTypes";
-import { dataSource } from "./dataSource";
 import { Mute } from "./entities/Mute";
+import { MuteTypes } from "./MuteTypes";
 
 export type AddMuteParams = {
   userId: Mute["user_id"];
@@ -20,7 +19,7 @@ export class GuildMutes extends BaseGuildRepository {
 
   constructor(guildId) {
     super(guildId);
-    this.mutes = dataSource.getRepository(Mute);
+    this.mutes = getRepository(Mute);
   }
 
   async getExpiredMutes(): Promise<Mute[]> {
@@ -32,7 +31,7 @@ export class GuildMutes extends BaseGuildRepository {
       .getMany();
   }
 
-  async findExistingMuteForUserId(userId: string): Promise<Mute | null> {
+  async findExistingMuteForUserId(userId: string): Promise<Mute | undefined> {
     return this.mutes.findOne({
       where: {
         guild_id: this.guildId,

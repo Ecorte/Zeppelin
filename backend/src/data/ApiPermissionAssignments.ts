@@ -1,9 +1,8 @@
 import { ApiPermissions } from "@shared/apiPermissions";
-import { Repository } from "typeorm";
+import { getRepository, Repository } from "typeorm";
 import { ApiAuditLog } from "./ApiAuditLog";
-import { BaseRepository } from "./BaseRepository";
 import { AuditLogEventTypes } from "./apiAuditLogTypes";
-import { dataSource } from "./dataSource";
+import { BaseRepository } from "./BaseRepository";
 import { ApiPermissionAssignment } from "./entities/ApiPermissionAssignment";
 
 export enum ApiPermissionTypes {
@@ -17,7 +16,7 @@ export class ApiPermissionAssignments extends BaseRepository {
 
   constructor() {
     super();
-    this.apiPermissions = dataSource.getRepository(ApiPermissionAssignment);
+    this.apiPermissions = getRepository(ApiPermissionAssignment);
     this.auditLogs = new ApiAuditLog();
   }
 

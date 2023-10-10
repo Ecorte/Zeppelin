@@ -1,8 +1,7 @@
 import moment from "moment-timezone";
-import { Repository } from "typeorm";
+import { getRepository, Repository } from "typeorm";
 import { DBDateFormat } from "../utils";
 import { BaseRepository } from "./BaseRepository";
-import { dataSource } from "./dataSource";
 import { Reminder } from "./entities/Reminder";
 
 export class Reminders extends BaseRepository {
@@ -10,7 +9,7 @@ export class Reminders extends BaseRepository {
 
   constructor() {
     super();
-    this.reminders = dataSource.getRepository(Reminder);
+    this.reminders = getRepository(Reminder);
   }
 
   async getRemindersDueSoon(threshold: number): Promise<Reminder[]> {

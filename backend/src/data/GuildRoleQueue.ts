@@ -1,6 +1,6 @@
-import { Repository } from "typeorm";
+import { getRepository, Repository } from "typeorm";
 import { BaseGuildRepository } from "./BaseGuildRepository";
-import { dataSource } from "./dataSource";
+import { connection } from "./db";
 import { RoleQueueItem } from "./entities/RoleQueueItem";
 
 export class GuildRoleQueue extends BaseGuildRepository {
@@ -8,11 +8,11 @@ export class GuildRoleQueue extends BaseGuildRepository {
 
   constructor(guildId) {
     super(guildId);
-    this.roleQueue = dataSource.getRepository(RoleQueueItem);
+    this.roleQueue = getRepository(RoleQueueItem);
   }
 
   consumeNextRoleAssignments(count: number): Promise<RoleQueueItem[]> {
-    return dataSource.transaction(async (entityManager) => {
+    return connection.transaction(async (entityManager) => {
       const repository = entityManager.getRepository(RoleQueueItem);
 
       const nextAssignments = await repository

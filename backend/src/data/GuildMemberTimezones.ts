@@ -1,6 +1,6 @@
-import { Repository } from "typeorm/index";
+import { getRepository, Repository } from "typeorm/index";
 import { BaseGuildRepository } from "./BaseGuildRepository";
-import { dataSource } from "./dataSource";
+import { connection } from "./db";
 import { MemberTimezone } from "./entities/MemberTimezone";
 
 export class GuildMemberTimezones extends BaseGuildRepository {
@@ -8,26 +8,22 @@ export class GuildMemberTimezones extends BaseGuildRepository {
 
   constructor(guildId: string) {
     super(guildId);
-    this.memberTimezones = dataSource.getRepository(MemberTimezone);
+    this.memberTimezones = getRepository(MemberTimezone);
   }
 
   get(memberId: string) {
     return this.memberTimezones.findOne({
-      where: {
-        guild_id: this.guildId,
-        member_id: memberId,
-      },
+      guild_id: this.guildId,
+      member_id: memberId,
     });
   }
 
   async set(memberId, timezone: string) {
-    await dataSource.transaction(async (entityManager) => {
+    await connection.transaction(async (entityManager) => {
       const repo = entityManager.getRepository(MemberTimezone);
       const existingRow = await repo.findOne({
-        where: {
-          guild_id: this.guildId,
-          member_id: memberId,
-        },
+        guild_id: this.guildId,
+        member_id: memberId,
       });
 
       if (existingRow) {

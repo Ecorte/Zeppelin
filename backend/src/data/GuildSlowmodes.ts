@@ -1,7 +1,6 @@
 import moment from "moment-timezone";
-import { Repository } from "typeorm";
+import { getRepository, Repository } from "typeorm";
 import { BaseGuildRepository } from "./BaseGuildRepository";
-import { dataSource } from "./dataSource";
 import { SlowmodeChannel } from "./entities/SlowmodeChannel";
 import { SlowmodeUser } from "./entities/SlowmodeUser";
 
@@ -11,11 +10,11 @@ export class GuildSlowmodes extends BaseGuildRepository {
 
   constructor(guildId) {
     super(guildId);
-    this.slowmodeChannels = dataSource.getRepository(SlowmodeChannel);
-    this.slowmodeUsers = dataSource.getRepository(SlowmodeUser);
+    this.slowmodeChannels = getRepository(SlowmodeChannel);
+    this.slowmodeUsers = getRepository(SlowmodeUser);
   }
 
-  async getChannelSlowmode(channelId): Promise<SlowmodeChannel | null> {
+  async getChannelSlowmode(channelId): Promise<SlowmodeChannel | undefined> {
     return this.slowmodeChannels.findOne({
       where: {
         guild_id: this.guildId,
@@ -52,13 +51,11 @@ export class GuildSlowmodes extends BaseGuildRepository {
     });
   }
 
-  async getChannelSlowmodeUser(channelId, userId): Promise<SlowmodeUser | null> {
+  async getChannelSlowmodeUser(channelId, userId): Promise<SlowmodeUser | undefined> {
     return this.slowmodeUsers.findOne({
-      where: {
-        guild_id: this.guildId,
-        channel_id: channelId,
-        user_id: userId,
-      },
+      guild_id: this.guildId,
+      channel_id: channelId,
+      user_id: userId,
     });
   }
 

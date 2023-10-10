@@ -1,6 +1,5 @@
-import { Repository } from "typeorm";
+import { getRepository, Repository } from "typeorm";
 import { BaseGuildRepository } from "./BaseGuildRepository";
-import { dataSource } from "./dataSource";
 import { ReactionRole } from "./entities/ReactionRole";
 
 export class GuildReactionRoles extends BaseGuildRepository {
@@ -8,7 +7,7 @@ export class GuildReactionRoles extends BaseGuildRepository {
 
   constructor(guildId) {
     super(guildId);
-    this.reactionRoles = dataSource.getRepository(ReactionRole);
+    this.reactionRoles = getRepository(ReactionRole);
   }
 
   async all(): Promise<ReactionRole[]> {
@@ -31,7 +30,7 @@ export class GuildReactionRoles extends BaseGuildRepository {
     });
   }
 
-  async getByMessageAndEmoji(messageId: string, emoji: string): Promise<ReactionRole | null> {
+  async getByMessageAndEmoji(messageId: string, emoji: string): Promise<ReactionRole | undefined> {
     return this.reactionRoles.findOne({
       where: {
         guild_id: this.guildId,

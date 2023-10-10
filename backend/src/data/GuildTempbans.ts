@@ -1,7 +1,6 @@
 import moment from "moment-timezone";
-import { Repository } from "typeorm";
+import { getRepository, Repository } from "typeorm";
 import { BaseGuildRepository } from "./BaseGuildRepository";
-import { dataSource } from "./dataSource";
 import { Tempban } from "./entities/Tempban";
 
 export class GuildTempbans extends BaseGuildRepository {
@@ -9,7 +8,7 @@ export class GuildTempbans extends BaseGuildRepository {
 
   constructor(guildId) {
     super(guildId);
-    this.tempbans = dataSource.getRepository(Tempban);
+    this.tempbans = getRepository(Tempban);
   }
 
   async getExpiredTempbans(): Promise<Tempban[]> {
@@ -21,7 +20,7 @@ export class GuildTempbans extends BaseGuildRepository {
       .getMany();
   }
 
-  async findExistingTempbanForUserId(userId: string): Promise<Tempban | null> {
+  async findExistingTempbanForUserId(userId: string): Promise<Tempban | undefined> {
     return this.tempbans.findOne({
       where: {
         guild_id: this.guildId,
