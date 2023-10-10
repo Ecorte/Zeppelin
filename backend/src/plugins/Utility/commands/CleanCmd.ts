@@ -7,7 +7,7 @@ import { SavedMessage } from "../../../data/entities/SavedMessage";
 import { humanizeDurationShort } from "../../../humanizeDurationShort";
 import { getBaseUrl, sendErrorMessage, sendSuccessMessage } from "../../../pluginUtils";
 import { ModActionsPlugin } from "../../../plugins/ModActions/ModActionsPlugin";
-import { DAYS, SECONDS, getInviteCodesInString, noop } from "../../../utils";
+import { DAYS, SECONDS, chunkArray, getInviteCodesInString, noop } from "../../../utils";
 import { LogsPlugin } from "../../Logs/LogsPlugin";
 import { UtilityPluginType, utilityCmd } from "../types";
 
